@@ -1,22 +1,19 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-
-# --- Google Sheets setup ---
 import gspread
 from google.oauth2.service_account import Credentials
 from gspread_dataframe import get_as_dataframe
 
-# --- Authenticate and load Google Sheet ---
+# --- Authenticate and load Google Sheet from Streamlit secrets ---
 scope = [
     "https://spreadsheets.google.com/feeds",
     "https://www.googleapis.com/auth/drive"
 ]
-creds = Credentials.from_service_account_file('credentials.json', scopes=scope)
+service_account_info = st.secrets["gcp_service_account"]
+creds = Credentials.from_service_account_info(service_account_info, scopes=scope)
 client = gspread.authorize(creds)
 worksheet = client.open("Grades2").sheet1  # or .worksheet("Sheet1")
-
-# --- Load sheet as DataFrame ---
 df = get_as_dataframe(worksheet, evaluate_formulas=True).dropna(how='all')
 
 # --- Set background color and font sizes ---
@@ -98,16 +95,6 @@ st.pyplot(fig, use_container_width=True)
 st.markdown("<div class='section-space'></div>", unsafe_allow_html=True)
 
 # ---- Styled table ----
-#def color_grades(val):
-#    if pd.isnull(val): return ''
-#    if val < 60: color = 'red'
-#    elif val < 70: color = '#FFA500'
-#    elif val < 93: color = 'green'
-#    else: color = 'blue'
-#    return f'color: {color}; font-weight:bold; font-size:1.15em;'
-
-#styled = filtered[['Subject', 'Grade']].style.applymap(color_grades, subset=['Grade'])
-
 def color_grades(val):
     if pd.isnull(val): return ''
     if val < 60: color = 'red'
@@ -123,13 +110,8 @@ styled = (
     .format({'Grade': '{:.1f}'})
 )
 
-#st.markdown("<h2 style='font-size:2em; font-weight:400; text-align:center;'>Grade Table</h2>", unsafe_allow_html=True)
-#st.dataframe(styled, use_container_width=True, hide_index=True)
-
-
 st.markdown("<h2 style='font-size:2em; font-weight:400; text-align:center;'>Grade Table</h2>", unsafe_allow_html=True)
 st.dataframe(styled, use_container_width=True, hide_index=True)
-
 st.markdown("<div class='section-space'></div>", unsafe_allow_html=True)
 
 # ---- Bigger legend, spaced out ----
