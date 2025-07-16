@@ -13,7 +13,7 @@ scope = [
 service_account_info = st.secrets["gcp_service_account"]
 creds = Credentials.from_service_account_info(service_account_info, scopes=scope)
 client = gspread.authorize(creds)
-worksheet = client.open("Grades2").sheet1  # or .worksheet("Sheet1")
+worksheet = client.open("Grades3").sheet1  # or .worksheet("Sheet1")
 df = get_as_dataframe(worksheet, evaluate_formulas=True).dropna(how='all')
 
 # --- Set background color and font sizes ---
