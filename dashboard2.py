@@ -40,10 +40,22 @@ grade = st.sidebar.number_input("Grade", min_value=0, max_value=100)
 conduct_code = st.sidebar.selectbox("Conduct Code", ["Excellent", "Good", "Average", "Needs Improvement"])
 comment_code = st.sidebar.text_area("Comment")
 
+#if st.sidebar.button("Submit Entry"):
+#    new_row = [teacher_email, subject, role, student_name, str(grade), conduct_code, comment_code]
+#    worksheet.append_row(new_row)
+#    st.sidebar.success("Entry submitted! (Check the main area for updates)")
+
 if st.sidebar.button("Submit Entry"):
-    new_row = [teacher_email, subject, role, student_name, str(grade), conduct_code, comment_code]
-    worksheet.append_row(new_row)
-    st.sidebar.success("Entry submitted! (Check the main area for updates)")
+    new_row = [teacher_email, subject, role, student_name, grade, conduct_code, comment_code]
+    try:
+        st.write("About to write this row:", new_row)
+        worksheet.append_row(new_row)
+        st.sidebar.success("Entry submitted!")
+        st.write("Submitted:", new_row)
+    except Exception as e:
+        st.sidebar.error(f"Error submitting entry: {e}")
+        st.write("ERROR:", e)
+
 
 # --- MAIN AREA: Show Sheet2 data ---
 st.header("Live Sheet Data: Sheet2")
