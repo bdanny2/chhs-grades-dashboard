@@ -6,6 +6,16 @@ from google.oauth2.service_account import Credentials
 service_account_info = st.secrets["gcp_service_account"]
 creds = Credentials.from_service_account_info(service_account_info, scopes=["https://www.googleapis.com/auth/spreadsheets"])
 client = gspread.authorize(creds)
+########################################
+st.write("Connecting as:", service_account_info["client_email"])
+try:
+    spreadsheet = client.open("Grades3")
+    st.write("Spreadsheet found:", spreadsheet.title)
+    st.write("Worksheets:", [ws.title for ws in spreadsheet.worksheets()])
+except Exception as e:
+    st.error(f"Error opening spreadsheet: {e}")
+
+#########################################
 worksheet = client.open("Grades3").worksheet("Sheet2")  # Update sheet name if needed
 
 # --- Sidebar UI ---
