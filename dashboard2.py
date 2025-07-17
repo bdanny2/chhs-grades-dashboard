@@ -6,8 +6,8 @@ from google.oauth2.service_account import Credentials
 service_account_info = st.secrets["gcp_service_account"]
 creds = Credentials.from_service_account_info(service_account_info, scopes=["https://www.googleapis.com/auth/spreadsheets"])
 client = gspread.authorize(creds)
-worksheet = client.open("Grades3").sheet2  #worksheet("Sheet2")  # Update sheet name if needed
-#worksheet = client.open("Grades2").sheet1  # or .worksheet("Sheet1")
+worksheet = client.open("Grades3").worksheet("Sheet2")  # Update sheet name if needed
+
 # --- Sidebar UI ---
 st.sidebar.title("Teacher Entry Portal")
 
