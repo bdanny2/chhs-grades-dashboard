@@ -27,7 +27,7 @@ client = gspread.authorize(creds)
 worksheet = client.open("Grades3").worksheet("Sheet2")  # Update sheet name if needed
 
 # --- Sidebar UI ---
-st.sidebar.title("Teacher Entry Portal")
+st.sidebar.title("Teacher Grade Entry Portal")
 
 teacher_email = st.sidebar.text_input("Your Email")
 subject = st.sidebar.text_input("Subject")
