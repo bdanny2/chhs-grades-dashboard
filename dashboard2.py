@@ -84,7 +84,7 @@ if st.sidebar.button("Submit Entry"):
                 break
 
         if row_num:
-            worksheet.update_cell(row_num, col_teacher + 1, teacher_email)
+           # worksheet.update_cell(row_num, col_teacher + 1, teacher_email)
             if col_role: worksheet.update_cell(row_num, col_role + 1, role)
             worksheet.update_cell(row_num, col_grade + 1, grade)
             worksheet.update_cell(row_num, col_conduct + 1, conduct_code)
