@@ -1,5 +1,6 @@
 import streamlit as st
 import gspread
+import pandas as pd
 from google.oauth2.service_account import Credentials
 
 # --- Authenticate and connect to your new workbook ---
