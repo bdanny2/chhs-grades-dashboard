@@ -47,4 +47,14 @@ if st.sidebar.button("Submit Entry"):
     worksheet.append_row(new_row)
     st.sidebar.success("Entry submitted!")
 
+
+# --- Show the Sheet Data in the Main Area ---
+data = worksheet.get_all_values()
+if data:
+    df = pd.DataFrame(data[1:], columns=data[0])
+    st.header("Latest Entries")
+    st.dataframe(df)
+else:
+    st.info("No entries yet.")
+
 # You can expand this with dropdowns for students, subjects, etc., by reading the sheet and populating options.
