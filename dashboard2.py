@@ -108,7 +108,7 @@ if not filtered.empty:
         disabled=[c for c in filtered_view.columns if c not in editable_cols],
         key="grade_editor"
     )
-st.write(f"Editing as: **{teacher_name}** ({subject}, {term}, {assessment_type})")
+    st.write(f"Editing as: **{teacher_name}** ({subject}, {term}, {assessment_type})")
     if st.button("Save Changes"):
         changed = (filtered[editable_cols] != edited_df[editable_cols]).any(axis=1)
         for idx in filtered[changed].index:
