@@ -73,7 +73,7 @@ if st.session_state["user_role"] is None:
     if st.button("Continue"):
         if role != "Select...":
             st.session_state["user_role"] = role
-            st.experimental_rerun()
+            st.rerun()
     st.markdown("---")
     st.info("If you do not see your role or have access issues, contact the school administrator.")
 
