@@ -13,7 +13,33 @@ creds = Credentials.from_service_account_info(
     ]
 )
 client = gspread.authorize(creds)
-
+# --- Set background color and font sizes ---
+st.markdown("""
+    <style>
+        body, .stApp { background-color: #f5deb3 !important; }
+        section[data-testid="stSidebar"] { background-color: cornsilk !important; }
+        .main-title {
+            text-align: center; 
+            font-size: 3em; 
+            font-weight: 400; 
+            margin-top: 0.5em;
+            margin-bottom: 0.1em;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 1em;
+        }
+        .section-space { margin-top: 3em; }
+        .big-legend { font-size: 1.0em; }
+        .block-container {
+            padding-top: 1.5em !important;
+            padding-bottom: 1.5em !important;
+            padding-left: 3vw !important;
+            padding-right: 3vw !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 # ---- Sidebar content ----
 st.sidebar.image("logo-chhs.png", width=120)
@@ -61,8 +87,6 @@ if not filtered.empty:
     assessment_type = st.sidebar.selectbox("Assessment Type", sorted(filtered["Assessment Type"].unique()))
     filtered = filtered[filtered["Assessment Type"] == assessment_type]
 
-    st.write(f"Editing as: **{teacher_name}** ({subject}, {term}, {assessment_type})")
-
     # Inline editable columns
     editable_cols = ["Grade", "Subject Teacher Conduct Code", "Subject Teacher Comment Code"]
 
@@ -84,7 +108,7 @@ if not filtered.empty:
         disabled=[c for c in filtered_view.columns if c not in editable_cols],
         key="grade_editor"
     )
-
+st.write(f"Editing as: **{teacher_name}** ({subject}, {term}, {assessment_type})")
     if st.button("Save Changes"):
         changed = (filtered[editable_cols] != edited_df[editable_cols]).any(axis=1)
         for idx in filtered[changed].index:
