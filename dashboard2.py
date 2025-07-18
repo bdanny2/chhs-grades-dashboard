@@ -73,7 +73,7 @@ if st.session_state["user_role"] is None:
     if st.button("Continue"):
         if role != "Select...":
             st.session_state["user_role"] = role
-            st.experimental_rerun()
+            st.rerun()
     st.markdown("---")
     st.info("If you do not see your role or have access issues, contact the school administrator.")
 
@@ -137,7 +137,7 @@ elif st.session_state["user_role"] == "Teacher":
                     new_value = edited_df.at[idx, col]
                     student_ws.update_cell(row_number, col_number, new_value)
             st.success("Changes saved to Google Sheet!")
-            st.experimental_rerun()
+            st.rerun()
 
         st.divider()
         with st.expander("Show all students/grades (read only):"):
@@ -147,7 +147,7 @@ elif st.session_state["user_role"] == "Teacher":
 
     if st.sidebar.button("Change Role"):
         st.session_state["user_role"] = None
-        st.experimental_rerun()
+        st.rerun()
 
 # --- STUDENT INTERFACE (Placeholder) ---
 elif st.session_state["user_role"] == "Student":
@@ -155,7 +155,7 @@ elif st.session_state["user_role"] == "Student":
     st.info("🔒 This area is under development.\n\nIn future, students will be able to securely view their grades and progress reports here.")
     if st.button("Change Role"):
         st.session_state["user_role"] = None
-        st.experimental_rerun()
+        st.rerun()
 
 # --- PARENT INTERFACE (Placeholder) ---
 elif st.session_state["user_role"] == "Parent":
@@ -163,7 +163,7 @@ elif st.session_state["user_role"] == "Parent":
     st.info("🔒 This area is under development.\n\nParents will soon be able to log in and view their child's grades and school progress.")
     if st.button("Change Role"):
         st.session_state["user_role"] = None
-        st.experimental_rerun()
+        st.rerun()
 
 # --- ADMIN INTERFACE (Placeholder) ---
 elif st.session_state["user_role"] == "Admin":
@@ -171,4 +171,4 @@ elif st.session_state["user_role"] == "Admin":
     st.info("🔒 This area is under development.\n\nAdmins will be able to manage users, run analytics, and export grade reports.")
     if st.button("Change Role"):
         st.session_state["user_role"] = None
-        st.experimental_rerun()
+        st.rerun()
