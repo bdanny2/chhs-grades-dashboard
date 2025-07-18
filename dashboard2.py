@@ -76,7 +76,10 @@ if "user_role" not in st.session_state:
 
 # --------- LANDING PAGE (Role Selection) ---------
 if st.session_state["user_role"] is None:
-    st.markdown("<img src='logo-chhs.png' class='main-logo'>", unsafe_allow_html=True)
+    # Centered logo using columns
+    col1, col2, col3 = st.columns([2, 3, 2])
+    with col2:
+        st.image("logo-chhs.png", width=210)
     st.markdown("<div class='main-title'>Welcome to the Grades Management System</div>", unsafe_allow_html=True)
     st.markdown("<div class='subtitle'>Please select your role to continue:</div>", unsafe_allow_html=True)
     col = st.columns([2, 1, 2])[1]
@@ -88,6 +91,7 @@ if st.session_state["user_role"] is None:
                 st.rerun()
     st.markdown("---")
     st.info("If you do not see your role or have access issues, contact the school administrator.")
+
 
 # --------- TEACHER INTERFACE ---------
 elif st.session_state["user_role"] == "Teacher":
