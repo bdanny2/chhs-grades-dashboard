@@ -42,7 +42,7 @@ email = st.sidebar.text_input("Your Email").strip().lower()
 
 matched = teacher_df[teacher_df["email"].str.strip().str.lower() == email]
 if len(matched) == 0:
-    st.sidebar.error("Please use your registered CHHS email.")
+    st.sidebar.error("Please enter your registered CHHS email for access.")
     st.stop()
 else:
     teacher_name = matched.iloc[0]["Teacher"]
