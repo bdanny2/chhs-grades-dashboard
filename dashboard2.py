@@ -5,8 +5,20 @@ import pandas as pd
 
 # --- App config & Styles ---
 st.set_page_config(page_title="Grades Portal", layout="wide")
+
 st.markdown("""
     <style>
+        .main-logo {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            max-width: 220px;
+            border-radius: 18px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+        }
+        
         body, .stApp { background-color: #f5deb3 !important; }
         section[data-testid="stSidebar"] { background-color: cornsilk !important; }
         .image { 
