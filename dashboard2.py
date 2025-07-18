@@ -66,6 +66,7 @@ if "user_role" not in st.session_state:
     st.session_state["user_role"] = None
 
 # --- Index / Landing Page ---
+st.image("logo-chhs.png")
 if st.session_state["user_role"] is None:
     st.title("Welcome to the Grades Management System")
     st.subheader("Please select your role to continue:")
