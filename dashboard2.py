@@ -191,75 +191,80 @@ def admin_interface():
             (student_df['Student Name'] == selected_student) &
             (student_df['Assessment Type'] == selected_assessment)
         ]
-        grades = filtered[['Subject', 'Grade']].dropna()
+        grades = filtered[['Subject', 'Grade']].dropna(subset=['Subject'])
+
+        # Convert grades to numeric, errors='coerce' turns invalid entries to NaN
+        grades['Grade'] = pd.to_numeric(grades['Grade'], errors='coerce')
         grades.set_index('Subject', inplace=True)
-        grades = grades['Grade']
+        grades_series = grades['Grade']
 
-        # --- Color Function ---
-        def get_color(g):
-            if pd.isnull(g): return 'gray'
-            if float(g) < 60: return 'red'
-            elif float(g) < 70: return '#FFA500'
-            elif float(g) < 93: return 'green'
-            else: return 'blue'
-        colors = [get_color(g) for g in grades]
+        if grades_series.empty:
+            st.warning("No grades found for this student/assessment.")
+        else:
+            def get_color(g):
+                if pd.isnull(g): return 'gray'
+                if g < 60: return 'red'
+                elif g < 70: return '#FFA500'
+                elif g < 93: return 'green'
+                else: return 'blue'
+            colors = [get_color(g) for g in grades_series]
 
-        # --- Bar Chart ---
-        import matplotlib.pyplot as plt
-        fig, ax = plt.subplots(figsize=(10, 5))
-        bars = ax.bar(grades.index, [float(v) if pd.notnull(v) else 0 for v in grades.values], color=colors)
-        ax.set_title(f"{selected_student}'s Grades ({selected_assessment})", fontsize=20, pad=10)
-        ax.set_ylabel('Grade', fontsize=16)
-        ax.set_xlabel('Subject', fontsize=16)
-        ax.set_ylim(0, 100)
-        ax.set_yticks(range(0, 101, 10))
-        plt.xticks(rotation=30, ha='right', fontsize=14)
-        plt.yticks(fontsize=14)
-        plt.tight_layout(pad=2.0)
+            import matplotlib.pyplot as plt
+            fig, ax = plt.subplots(figsize=(10, 5))
+            bars = ax.bar(grades_series.index, grades_series.values, color=colors)
+            ax.set_title(f"{selected_student}'s Grades ({selected_assessment})", fontsize=20, pad=10)
+            ax.set_ylabel('Grade', fontsize=16)
+            ax.set_xlabel('Subject', fontsize=16)
+            ax.set_ylim(0, 100)
+            ax.set_yticks(range(0, 101, 10))
+            plt.xticks(rotation=30, ha='right', fontsize=14)
+            plt.yticks(fontsize=14)
+            plt.tight_layout(pad=2.0)
 
-        for bar, grade in zip(bars, grades.values):
-            if pd.notnull(grade):
-                ax.text(bar.get_x() + bar.get_width() / 2, float(grade) + 1,
-                        f"{float(grade):.0f}", ha='center', va='bottom', fontsize=13, fontweight='bold')
+            for bar, grade in zip(bars, grades_series.values):
+                if pd.notnull(grade):
+                    ax.text(bar.get_x() + bar.get_width() / 2, float(grade) + 1,
+                            f"{float(grade):.0f}", ha='center', va='bottom', fontsize=13, fontweight='bold')
 
-        st.pyplot(fig, use_container_width=True)
-        st.markdown("<div class='section-space'></div>", unsafe_allow_html=True)
+            st.pyplot(fig, use_container_width=True)
+            st.markdown("<div class='section-space'></div>", unsafe_allow_html=True)
 
-        # --- Styled Table ---
-        def color_grades(val):
-            if pd.isnull(val): return ''
-            v = float(val)
-            if v < 60: color = 'red'
-            elif v < 70: color = '#FFA500'
-            elif v < 93: color = 'green'
-            else: color = 'blue'
-            return f'color: {color}; font-weight:bold; font-size:1.10em;'
+            # --- Styled Table ---
+            def color_grades(val):
+                if pd.isnull(val): return ''
+                v = float(val)
+                if v < 60: color = 'red'
+                elif v < 70: color = '#FFA500'
+                elif v < 93: color = 'green'
+                else: color = 'blue'
+                return f'color: {color}; font-weight:bold; font-size:1.10em;'
 
-        styled = (
-            filtered[['Subject', 'Grade']]
-            .style
-            .applymap(color_grades, subset=['Grade'])
-            .format({'Grade': '{:.1f}'})
-        )
+            styled = (
+                grades
+                .style
+                .applymap(color_grades, subset=['Grade'])
+                .format({'Grade': '{:.1f}'})
+            )
 
-        st.markdown("<h2 style='font-size:1.2em; font-weight:400; text-align:center;'>Grade Table</h2>", unsafe_allow_html=True)
-        st.dataframe(styled, use_container_width=True, hide_index=True)
-        st.markdown("<div class='section-space'></div>", unsafe_allow_html=True)
+            st.markdown("<h2 style='font-size:1.2em; font-weight:400; text-align:center;'>Grade Table</h2>", unsafe_allow_html=True)
+            st.dataframe(styled, use_container_width=True, hide_index=True)
+            st.markdown("<div class='section-space'></div>", unsafe_allow_html=True)
 
-        # --- Legend ---
-        st.markdown("""
-        <div class='big-legend'>
-        <b>Legend:</b><br>
-        <span style='color:red; font-size:1.1em;'>Red</span>: &lt;60<br>
-        <span style='color:#FFA500; font-size:1.1em;'>Orange</span>: 60–69<br>
-        <span style='color:green; font-size:1.1em;'>Green</span>: 70-92<br>
-        <span style='color:blue; font-size:1.1em;'>Blue</span>: 93-100
-        </div>
-        """, unsafe_allow_html=True)
+            # --- Legend ---
+            st.markdown("""
+            <div class='big-legend'>
+            <b>Legend:</b><br>
+            <span style='color:red; font-size:1.1em;'>Red</span>: &lt;60<br>
+            <span style='color:#FFA500; font-size:1.1em;'>Orange</span>: 60–69<br>
+            <span style='color:green; font-size:1.1em;'>Green</span>: 70-92<br>
+            <span style='color:blue; font-size:1.1em;'>Blue</span>: 93-100
+            </div>
+            """, unsafe_allow_html=True)
 
         if st.button("Change Role"):
             st.session_state["user_role"] = None
             st.rerun()
+
 
 # --------------- MAIN ROUTER ---------------
 if st.session_state["user_role"] is None:
