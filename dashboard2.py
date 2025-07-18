@@ -63,7 +63,7 @@ if len(matched) == 0:
     st.stop()
 else:
     teacher_name = matched.iloc[0]["Teacher"]
-    st.sidebar.success(f"Editing as: **{teacher_name}** ({subject}!") 
+    st.sidebar.success(f"Editing as: **{teacher_name}** {subject}!") 
     #st.write(f", {term}, {assessment_type})")
     # Optional: Let teachers select which subject if they teach multiple
     subjects = matched["Subject"].tolist()  # in case of multiple rows per email
