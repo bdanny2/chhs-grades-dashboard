@@ -19,7 +19,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --------------- CONSTANTS ---------------
-LOGO_PATH = "90422ca0-cc91-4aea-84a2-a02ae49a02c9.png"  # Uploaded file or local path
+LOGO_PATH = "logo-chhs.png"  # Uploaded file or local path
 SPREADSHEET_NAME = "Grades3"
 SHEET_STUDENT = "Sheet2"
 SHEET_TEACHERS = "Sheet7"
