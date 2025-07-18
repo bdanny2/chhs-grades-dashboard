@@ -3,49 +3,28 @@ import gspread
 from google.oauth2.service_account import Credentials
 import pandas as pd
 
-# --------- CONFIG & STYLE ---------
+# --------------- CONFIG & STYLE ---------------
 st.set_page_config(page_title="Grades Portal", layout="wide")
 st.markdown("""
     <style>
         body, .stApp { background-color: #f5deb3 !important; }
         section[data-testid="stSidebar"] { background-color: cornsilk !important; }
-        .main-logo {
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 32px;
-            margin-bottom: 12px;
-            max-width: 210px;
-            border-radius: 18px;
-            box-shadow: 0 2px 14px rgba(0,0,0,0.10);
-        }
-        .main-title {
-            text-align: center; 
-            font-size: 2.4em; 
-            font-weight: 600; 
-            margin-top: 0.4em;
-            margin-bottom: 0.1em;
-        }
-        .subtitle {
-            text-align: center;
-            font-size: 1.22em;
-            margin-bottom: 1em;
-            color: #884;
-        }
         .block-container {
-            padding-top: 1.3em !important;
-            padding-bottom: 1.3em !important;
-            padding-left: 2vw !important;
-            padding-right: 2vw !important;
+            padding-top: 2.5em !important;
+            padding-bottom: 2.5em !important;
+            padding-left: 4vw !important;
+            padding-right: 4vw !important;
         }
     </style>
 """, unsafe_allow_html=True)
 
+# --------------- CONSTANTS ---------------
+LOGO_PATH = "90422ca0-cc91-4aea-84a2-a02ae49a02c9.png"  # Uploaded file or local path
 SPREADSHEET_NAME = "Grades3"
 SHEET_STUDENT = "Sheet2"
 SHEET_TEACHERS = "Sheet7"
 
-# --------- AUTH & DATA LOADING ---------
+# --------------- DATA LOADERS ---------------
 @st.cache_resource(show_spinner=False)
 def get_clients_and_data():
     service_account_info = st.secrets["gcp_service_account"]
@@ -70,39 +49,46 @@ def get_clients_and_data():
 
 client, teacher_df, student_df, student_ws = get_clients_and_data()
 
-# --------- SESSION STATE FOR ROLE ---------
+# --------------- SESSION STATE ---------------
 if "user_role" not in st.session_state:
     st.session_state["user_role"] = None
 
-# --------- LANDING PAGE (Role Selection) ---------
-if st.session_state["user_role"] is None:
-    # Centered logo using columns
+# --------------- LANDING PAGE (CENTERED) ---------------
+def landing_page():
     col1, col2, col3 = st.columns([2, 3, 2])
     with col2:
-        st.image("logo-chhs.png", width=210)
-    st.markdown("<div class='main-title'>Welcome to the Grades Management System</div>", unsafe_allow_html=True)
-    st.markdown("<div class='subtitle'>Please select your role to continue:</div>", unsafe_allow_html=True)
-    col = st.columns([2, 1, 2])[1]
-    with col:
+        st.image(LOGO_PATH, width=210)
+        st.markdown(
+            "<div style='text-align:center; font-size:2.4em; font-weight:600; margin-bottom:0.1em;'>"
+            "Welcome to the Grades Management System</div>",
+            unsafe_allow_html=True
+        )
+        st.markdown(
+            "<div style='text-align:center; color:#8c8256; font-size:1.15em; margin-bottom:2em;'>"
+            "Please select your role to continue:</div>",
+            unsafe_allow_html=True
+        )
         role = st.selectbox("I am a...", ["Select...", "Teacher", "Student", "Parent", "Admin"])
         if st.button("Continue"):
             if role != "Select...":
                 st.session_state["user_role"] = role
                 st.rerun()
-    st.markdown("---")
-    st.info("If you do not see your role or have access issues, contact the school administrator.")
+        st.markdown("---")
+        st.info("If you do not see your role or have access issues, contact the school administrator.")
 
-
-# --------- TEACHER INTERFACE ---------
-elif st.session_state["user_role"] == "Teacher":
-    st.sidebar.image("logo-chhs.png", width=120)
+# --------------- TEACHER INTERFACE ---------------
+def teacher_interface():
+    st.sidebar.image(LOGO_PATH, width=110)
     st.sidebar.title("Teacher Entry Portal")
+
     email = st.sidebar.text_input("Your Email").strip().lower()
     matched = teacher_df[teacher_df["email"].str.strip().str.lower() == email]
 
     if len(matched) == 0:
         st.sidebar.error("Email not recognized! Please use your registered email.")
-        st.sidebar.button("Back to Role Select", on_click=lambda: st.session_state.update(user_role=None))
+        if st.sidebar.button("Back to Role Select"):
+            st.session_state["user_role"] = None
+            st.rerun()
         st.stop()
     else:
         teacher_name = matched.iloc[0]["Teacher"]
@@ -164,29 +150,47 @@ elif st.session_state["user_role"] == "Teacher":
         st.session_state["user_role"] = None
         st.rerun()
 
-# --------- STUDENT INTERFACE (Placeholder) ---------
+# --------------- STUDENT INTERFACE (PLACEHOLDER) ---------------
+def student_interface():
+    col1, col2, col3 = st.columns([2, 3, 2])
+    with col2:
+        st.image(LOGO_PATH, width=140)
+        st.title("Student Portal")
+        st.info("🔒 This area is under development.\n\nIn future, students will be able to securely view their grades and progress reports here.")
+        if st.button("Change Role"):
+            st.session_state["user_role"] = None
+            st.rerun()
+
+# --------------- PARENT INTERFACE (PLACEHOLDER) ---------------
+def parent_interface():
+    col1, col2, col3 = st.columns([2, 3, 2])
+    with col2:
+        st.image(LOGO_PATH, width=140)
+        st.title("Parent Portal")
+        st.info("🔒 This area is under development.\n\nParents will soon be able to log in and view their child's grades and school progress.")
+        if st.button("Change Role"):
+            st.session_state["user_role"] = None
+            st.rerun()
+
+# --------------- ADMIN INTERFACE (PLACEHOLDER) ---------------
+def admin_interface():
+    col1, col2, col3 = st.columns([2, 3, 2])
+    with col2:
+        st.image(LOGO_PATH, width=140)
+        st.title("Admin Dashboard")
+        st.info("🔒 This area is under development.\n\nAdmins will be able to manage users, run analytics, and export grade reports.")
+        if st.button("Change Role"):
+            st.session_state["user_role"] = None
+            st.rerun()
+
+# --------------- MAIN ROUTER ---------------
+if st.session_state["user_role"] is None:
+    landing_page()
+elif st.session_state["user_role"] == "Teacher":
+    teacher_interface()
 elif st.session_state["user_role"] == "Student":
-    st.markdown("<img src='logo-chhs.png' class='main-logo'>", unsafe_allow_html=True)
-    st.title("Student Portal")
-    st.info("🔒 This area is under development.\n\nIn future, students will be able to securely view their grades and progress reports here.")
-    if st.button("Change Role"):
-        st.session_state["user_role"] = None
-        st.rerun()
-
-# --------- PARENT INTERFACE (Placeholder) ---------
+    student_interface()
 elif st.session_state["user_role"] == "Parent":
-    st.markdown("<img src='logo-chhs.png' class='main-logo'>", unsafe_allow_html=True)
-    st.title("Parent Portal")
-    st.info("🔒 This area is under development.\n\nParents will soon be able to log in and view their child's grades and school progress.")
-    if st.button("Change Role"):
-        st.session_state["user_role"] = None
-        st.rerun()
-
-# --------- ADMIN INTERFACE (Placeholder) ---------
+    parent_interface()
 elif st.session_state["user_role"] == "Admin":
-    st.markdown("<img src='logo-chhs.png' class='main-logo'>", unsafe_allow_html=True)
-    st.title("Admin Dashboard")
-    st.info("🔒 This area is under development.\n\nAdmins will be able to manage users, run analytics, and export grade reports.")
-    if st.button("Change Role"):
-        st.session_state["user_role"] = None
-        st.rerun()
+    admin_interface()
