@@ -47,7 +47,7 @@ student_df = pd.DataFrame(student_data[1:], columns=header)
 
 # Assume there's a 'Teacher Responsible Email' column for filtering
 filtered = student_df[
-    (student_df["Teacher Responsible Email"].str.strip().str.lower() == email) &
+    (student_df["Teacher_Responsible_Email"].str.strip().str.lower() == email) &
     (student_df["Subject"] == subject)
 ]
 
