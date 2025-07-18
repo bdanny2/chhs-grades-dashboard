@@ -63,7 +63,8 @@ if len(matched) == 0:
     st.stop()
 else:
     teacher_name = matched.iloc[0]["Teacher"]
-    st.sidebar.success(f"Welcome, {teacher_name}!")
+    st.sidebar.success(f"Welcome, {teacher_name}!") 
+    st.write(f"Editing as: **{teacher_name}** ({subject}, {term}, {assessment_type})")
     # Optional: Let teachers select which subject if they teach multiple
     subjects = matched["Subject"].tolist()  # in case of multiple rows per email
     subject = st.sidebar.selectbox("Select Subject", sorted(set(subjects)))
@@ -108,7 +109,7 @@ if not filtered.empty:
         disabled=[c for c in filtered_view.columns if c not in editable_cols],
         key="grade_editor"
     )
-    st.write(f"Editing as: **{teacher_name}** ({subject}, {term}, {assessment_type})")
+
     if st.button("Save Changes"):
         changed = (filtered[editable_cols] != edited_df[editable_cols]).any(axis=1)
         for idx in filtered[changed].index:
