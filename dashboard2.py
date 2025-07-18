@@ -21,9 +21,7 @@ st.markdown("""
         
         body, .stApp { background-color: #f5deb3 !important; }
         section[data-testid="stSidebar"] { background-color: cornsilk !important; }
-        .image { 
-        padding: 0.5em;
-        }
+        
         .main-title {
             text-align: center; 
             font-size: 3em; 
