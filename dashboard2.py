@@ -3,44 +3,40 @@ import gspread
 from google.oauth2.service_account import Credentials
 import pandas as pd
 
-# --- App config & Styles ---
+# --------- CONFIG & STYLE ---------
 st.set_page_config(page_title="Grades Portal", layout="wide")
-
 st.markdown("""
     <style>
+        body, .stApp { background-color: #f5deb3 !important; }
+        section[data-testid="stSidebar"] { background-color: cornsilk !important; }
         .main-logo {
             display: block;
             margin-left: auto;
             margin-right: auto;
-            margin-top: 30px;
-            margin-bottom: 10px;
-            max-width: 220px;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            max-width: 210px;
             border-radius: 18px;
-            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 14px rgba(0,0,0,0.10);
         }
-        
-        body, .stApp { background-color: #f5deb3 !important; }
-        section[data-testid="stSidebar"] { background-color: cornsilk !important; }
-        
         .main-title {
             text-align: center; 
-            font-size: 3em; 
-            font-weight: 400; 
-            margin-top: 0.5em;
+            font-size: 2.4em; 
+            font-weight: 600; 
+            margin-top: 0.4em;
             margin-bottom: 0.1em;
         }
         .subtitle {
             text-align: center;
-            font-size: 1.5em;
+            font-size: 1.22em;
             margin-bottom: 1em;
+            color: #884;
         }
-        .section-space { margin-top: 3em; }
-        .big-legend { font-size: 1.0em; }
         .block-container {
-            padding-top: 1.5em !important;
-            padding-bottom: 1.5em !important;
-            padding-left: 3vw !important;
-            padding-right: 3vw !important;
+            padding-top: 1.3em !important;
+            padding-bottom: 1.3em !important;
+            padding-left: 2vw !important;
+            padding-right: 2vw !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -49,7 +45,7 @@ SPREADSHEET_NAME = "Grades3"
 SHEET_STUDENT = "Sheet2"
 SHEET_TEACHERS = "Sheet7"
 
-# --- Authenticate & Load Data ---
+# --------- AUTH & DATA LOADING ---------
 @st.cache_resource(show_spinner=False)
 def get_clients_and_data():
     service_account_info = st.secrets["gcp_service_account"]
@@ -74,28 +70,29 @@ def get_clients_and_data():
 
 client, teacher_df, student_df, student_ws = get_clients_and_data()
 
-# --- Role Selection Logic ---
+# --------- SESSION STATE FOR ROLE ---------
 if "user_role" not in st.session_state:
     st.session_state["user_role"] = None
 
-# --- Index / Landing Page ---
-st.image("logo-chhs.png", width=110)
+# --------- LANDING PAGE (Role Selection) ---------
 if st.session_state["user_role"] is None:
-    st.title("Welcome to the Grades Management System")
-    st.subheader("Please select your role to continue:")
-    role = st.selectbox("I am a...", ["Select...", "Teacher", "Student", "Parent", "Admin"])
-    if st.button("Continue"):
-        if role != "Select...":
-            st.session_state["user_role"] = role
-            st.rerun()
+    st.markdown("<img src='logo-chhs.png' class='main-logo'>", unsafe_allow_html=True)
+    st.markdown("<div class='main-title'>Welcome to the Grades Management System</div>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle'>Please select your role to continue:</div>", unsafe_allow_html=True)
+    col = st.columns([2, 1, 2])[1]
+    with col:
+        role = st.selectbox("I am a...", ["Select...", "Teacher", "Student", "Parent", "Admin"])
+        if st.button("Continue"):
+            if role != "Select...":
+                st.session_state["user_role"] = role
+                st.rerun()
     st.markdown("---")
     st.info("If you do not see your role or have access issues, contact the school administrator.")
 
-# --- TEACHER INTERFACE ---
+# --------- TEACHER INTERFACE ---------
 elif st.session_state["user_role"] == "Teacher":
     st.sidebar.image("logo-chhs.png", width=120)
     st.sidebar.title("Teacher Entry Portal")
-
     email = st.sidebar.text_input("Your Email").strip().lower()
     matched = teacher_df[teacher_df["email"].str.strip().str.lower() == email]
 
@@ -163,24 +160,27 @@ elif st.session_state["user_role"] == "Teacher":
         st.session_state["user_role"] = None
         st.rerun()
 
-# --- STUDENT INTERFACE (Placeholder) ---
+# --------- STUDENT INTERFACE (Placeholder) ---------
 elif st.session_state["user_role"] == "Student":
+    st.markdown("<img src='logo-chhs.png' class='main-logo'>", unsafe_allow_html=True)
     st.title("Student Portal")
     st.info("🔒 This area is under development.\n\nIn future, students will be able to securely view their grades and progress reports here.")
     if st.button("Change Role"):
         st.session_state["user_role"] = None
         st.rerun()
 
-# --- PARENT INTERFACE (Placeholder) ---
+# --------- PARENT INTERFACE (Placeholder) ---------
 elif st.session_state["user_role"] == "Parent":
+    st.markdown("<img src='logo-chhs.png' class='main-logo'>", unsafe_allow_html=True)
     st.title("Parent Portal")
     st.info("🔒 This area is under development.\n\nParents will soon be able to log in and view their child's grades and school progress.")
     if st.button("Change Role"):
         st.session_state["user_role"] = None
         st.rerun()
 
-# --- ADMIN INTERFACE (Placeholder) ---
+# --------- ADMIN INTERFACE (Placeholder) ---------
 elif st.session_state["user_role"] == "Admin":
+    st.markdown("<img src='logo-chhs.png' class='main-logo'>", unsafe_allow_html=True)
     st.title("Admin Dashboard")
     st.info("🔒 This area is under development.\n\nAdmins will be able to manage users, run analytics, and export grade reports.")
     if st.button("Change Role"):
