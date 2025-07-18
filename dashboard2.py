@@ -9,6 +9,9 @@ st.markdown("""
     <style>
         body, .stApp { background-color: #f5deb3 !important; }
         section[data-testid="stSidebar"] { background-color: cornsilk !important; }
+        .image { 
+        margin-top: 0.5em;
+        }
         .main-title {
             text-align: center; 
             font-size: 3em; 
@@ -66,7 +69,7 @@ if "user_role" not in st.session_state:
     st.session_state["user_role"] = None
 
 # --- Index / Landing Page ---
-st.image("logo-chhs.png", width=120)
+st.image("logo-chhs.png", width=110)
 if st.session_state["user_role"] is None:
     st.title("Welcome to the Grades Management System")
     st.subheader("Please select your role to continue:")
