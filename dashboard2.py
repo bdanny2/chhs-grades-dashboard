@@ -9,7 +9,7 @@ st.markdown("""
     <style>
         body, .stApp { background-color: #f5deb3 !important; }
         section[data-testid="stSidebar"] { background-color: cornsilk !important; }
-        .main-title { text-align: center; font-size: 2.5em; font-weight: 500; }
+        .main-title { text-align: center; font-size: 2.0em; font-weight: 400; }
         .subtitle { text-align: center; font-size: 1.3em; margin-bottom: 0.8em; }
         .block-container { padding-top: 1.2em !important; }
     </style>
