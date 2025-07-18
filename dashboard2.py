@@ -10,7 +10,7 @@ st.markdown("""
         body, .stApp { background-color: #f5deb3 !important; }
         section[data-testid="stSidebar"] { background-color: cornsilk !important; }
         .image { 
-        margin-top: 0.5em;
+        /*margin-top: 0.5em;*/
         }
         .main-title {
             text-align: center; 
