@@ -1,99 +1,97 @@
 import streamlit as st
 import gspread
-import pandas as pd
 from google.oauth2.service_account import Credentials
+import pandas as pd
 
-# --- Google Sheets Auth ---
+# --- Authenticate & Load Data ---
 service_account_info = st.secrets["gcp_service_account"]
 creds = Credentials.from_service_account_info(
-    service_account_info, 
-    scopes=["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+    service_account_info,
+    scopes=[
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
 )
 client = gspread.authorize(creds)
 
-# --- Sheet Names ---
-TEACHERS_SHEET = "Sheet7"
-STUDENTS_SHEET = "Sheet2"
-SPREADSHEET = "Grades3"
+SPREADSHEET_NAME = "Grades3"
+SHEET_STUDENT = "Sheet2"   # Main grade data
+SHEET_TEACHERS = "Sheet7"  # Teacher emails/names/subjects
 
-# --- Load Teacher Data ---
-teacher_ws = client.open(SPREADSHEET).worksheet(TEACHERS_SHEET)
+# --- Load Teacher Roster ---
+teacher_ws = client.open(SPREADSHEET_NAME).worksheet(SHEET_TEACHERS)
 teacher_data = teacher_ws.get_all_records()
 teacher_df = pd.DataFrame(teacher_data)
 
-# --- Sidebar: Teacher Login ---
-st.sidebar.title("Teacher Login & Filter")
-teacher_email = st.sidebar.text_input("Enter your email")
+# --- Sidebar: Teacher Email Validation ---
+st.sidebar.title("Teacher Entry Portal")
+email = st.sidebar.text_input("Your Email").strip().lower()
 
-if teacher_email:
-    # Find teacher(s) info
-    assigned = teacher_df[teacher_df['email'].str.strip().str.lower() == teacher_email.strip().lower()]
-    if assigned.empty:
-        st.sidebar.error("No teacher found for that email.")
-        st.stop()
+# Validate email
+matched = teacher_df[teacher_df["email"].str.strip().str.lower() == email]
+if len(matched) == 0:
+    st.sidebar.error("Email not recognized! Please use your registered email.")
+    st.stop()
+else:
+    teacher_name = matched.iloc[0]["Teacher"]
+    st.sidebar.success(f"Welcome, {teacher_name}!")
+    # Optional: Let teachers select which subject if they teach multiple
+    subjects = matched["Subject"].tolist()  # in case of multiple rows per email
+    subject = st.sidebar.selectbox("Select Subject", sorted(set(subjects)))
 
-    st.sidebar.success(f"Welcome, {assigned.iloc[0]['Teacher']}!")
+# --- Load and filter student data ---
+student_ws = client.open(SPREADSHEET_NAME).worksheet(SHEET_STUDENT)
+student_data = student_ws.get_all_values()
+header = student_data[0]
+student_df = pd.DataFrame(student_data[1:], columns=header)
 
-    # Get list of assigned subjects & classes
-    subjects = assigned['Subject'].iloc[0].split(',') if ',' in assigned['Subject'].iloc[0] else [assigned['Subject'].iloc[0]]
-    role = assigned['Role'].iloc[0]
-    st.sidebar.write(f"Your Role: {role}")
-    subject_choice = st.sidebar.selectbox("Select Subject", subjects)
+# Assume there's a 'Teacher Responsible Email' column for filtering
+filtered = student_df[
+    (student_df["Teacher Responsible Email"].str.strip().str.lower() == email) &
+    (student_df["Subject"] == subject)
+]
 
-    # Optionally handle multiple classes per teacher if included
-    class_list = []
-    if 'Class' in assigned.columns:
-        class_list = assigned['Class'].iloc[0].split(',') if 'Class' in assigned and isinstance(assigned['Class'].iloc[0], str) else []
-    class_choice = st.sidebar.selectbox("Select Class", class_list) if class_list else None
+# Add more sidebar filters (Term, Assessment Type, etc.)
+if not filtered.empty:
+    term = st.sidebar.selectbox("Term", sorted(filtered["Term"].unique()))
+    filtered = filtered[filtered["Term"] == term]
+    assessment_type = st.sidebar.selectbox("Assessment Type", sorted(filtered["Assessment Type"].unique()))
+    filtered = filtered[filtered["Assessment Type"] == assessment_type]
 
-    # --- Load Student Data ---
-    student_ws = client.open(SPREADSHEET).worksheet(STUDENTS_SHEET)
-    student_data = student_ws.get_all_records()
-    student_df = pd.DataFrame(student_data)
+    st.write(f"Editing as: **{teacher_name}** ({subject}, {term}, {assessment_type})")
 
-    # --- Filter student data for this teacher/subject/class ---
-    # Make sure your Sheet2 has columns: Student Name, Subject, Teacher Responsible, Class, etc.
-    filt = (
-        (student_df['Subject'].str.strip().str.lower() == subject_choice.strip().lower()) &
-        (student_df['Teacher Responsible'].str.strip().str.lower() == assigned.iloc[0]['Teacher'].strip().lower())
+    # Inline editable columns
+    editable_cols = ["Grade", "Subject Teacher Conduct Code", "Subject Teacher Comment Code"]
+
+    # Show teacher's name in the table (friendly!)
+    filtered_view = filtered.copy()
+    filtered_view["Teacher"] = teacher_name
+
+    edited_df = st.data_editor(
+        filtered_view,
+        num_rows="fixed",
+        use_container_width=True,
+        column_config={
+            "Grade": st.column_config.NumberColumn("Grade", min_value=0, max_value=100),
+            "Subject Teacher Conduct Code": st.column_config.SelectboxColumn(
+                "Conduct", options=["Excellent", "Good", "Average", "Needs Improvement"]
+            ),
+            "Subject Teacher Comment Code": st.column_config.TextColumn("Comment")
+        },
+        disabled=[c for c in filtered_view.columns if c not in editable_cols],
+        key="grade_editor"
     )
-    if class_choice:
-        filt = filt & (student_df['Class'].str.strip().str.lower() == class_choice.strip().lower())
-    
-    filtered_students = student_df[filt]
 
-    st.header(f"Students for {subject_choice}{' - ' + class_choice if class_choice else ''}")
-    st.dataframe(filtered_students)
-
-    # --- Grade Entry ---
-    st.subheader("Enter/Update Grade")
-    if not filtered_students.empty:
-        student_names = filtered_students['Student Name'].tolist()
-        student_sel = st.selectbox("Select Student", student_names)
-        grade = st.number_input("Grade", min_value=0, max_value=100, step=1)
-        conduct_code = st.selectbox("Conduct Code", ["Excellent", "Good", "Average", "Needs Improvement"])
-        comment_code = st.text_area("Comment")
-
-        if st.button("Submit Grade"):
-            # Find the row to update in Sheet2
-            idx = student_df[
-                (student_df['Student Name'] == student_sel) &
-                (student_df['Subject'] == subject_choice) &
-                (student_df['Teacher Responsible'] == assigned.iloc[0]['Teacher'])
-            ].index
-
-            if not idx.empty:
-                # Sheet2 row numbers are 1-based (with header), so add +2 (header + zero-indexed)
-                sheet2_row = idx[0] + 2
-                # Update grade, conduct, comment columns (adjust column letters as needed!)
-                # Example: Grade=H, Conduct=I, Comment=J (check your sheet layout)
-                student_ws.update_acell(f'H{sheet2_row}', str(grade))
-                student_ws.update_acell(f'I{sheet2_row}', conduct_code)
-                student_ws.update_acell(f'J{sheet2_row}', comment_code)
-                st.success("Grade updated!")
-            else:
-                st.error("Student not found for this subject/teacher.")
+    if st.button("Save Changes"):
+        changed = (filtered[editable_cols] != edited_df[editable_cols]).any(axis=1)
+        for idx in filtered[changed].index:
+            row_number = idx + 2  # Header = row 1 in Sheets
+            for col in editable_cols:
+                col_number = student_df.columns.get_loc(col) + 1
+                new_value = edited_df.at[idx, col]
+                student_ws.update_cell(row_number, col_number, new_value)
+        st.success("Changes saved to Google Sheet!")
 
 else:
-    st.info("Please enter your email to begin.")
+    st.info("No assigned students for your filter selection.")
 
