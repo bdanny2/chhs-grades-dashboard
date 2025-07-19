@@ -55,7 +55,7 @@ if "user_role" not in st.session_state:
 
 # --------------- LANDING PAGE (CENTERED) ---------------
 def landing_page():
-    col1, col2, col3 = st.columns([3, 4, 3])
+    col1, col2, col3 = st.columns([2, 4, 2])
     with col2:
         st.image(LOGO_PATH, width=160)
         st.markdown(
