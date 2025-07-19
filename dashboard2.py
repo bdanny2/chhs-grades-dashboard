@@ -61,7 +61,7 @@ def landing_page():
     with col2:
         st.markdown(
             "<div style='text-align:center; font-size:2.0em; font-weight:400; margin-bottom:0.1em;'>"
-            "WELCOME TO THE CLEMENT HOWELL HIGH SCHOOL GREADES MANAGEMENT SYSTEM</div>",
+            "WELCOME TO THE CLEMENT HOWELL HIGH SCHOOL GRADES MANAGEMENT SYSTEM</div>",
             unsafe_allow_html=True
         )
         st.markdown(
