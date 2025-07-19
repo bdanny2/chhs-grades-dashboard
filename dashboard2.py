@@ -60,7 +60,7 @@ def landing_page():
         st.image(LOGO_PATH, width=210)
         st.markdown(
             "<div style='text-align:center; font-size:2.4em; font-weight:600; margin-bottom:0.1em;'>"
-            "Welcome to the Grades Management System</div>",
+            "Welcome to the CLEMENT HOWELL HIGH SCHOOL Grades Management System</div>",
             unsafe_allow_html=True
         )
         st.markdown(
