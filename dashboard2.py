@@ -57,10 +57,10 @@ if "user_role" not in st.session_state:
 def landing_page():
     col1, col2, col3 = st.columns([2, 3, 2])
     with col2:
-        st.image(LOGO_PATH, width=210)
+        st.image(LOGO_PATH, width=190)
         st.markdown(
             "<div style='text-align:center; font-size:2.4em; font-weight:600; margin-bottom:0.1em;'>"
-            "Welcome to the CLEMENT HOWELL HIGH SCHOOL Grades Management System</div>",
+            "WELCOME TO THE CLEMENT HOWELL HIGH SCHOOL GREADES MANAGEMENT SYSTEM</div>",
             unsafe_allow_html=True
         )
         st.markdown(
