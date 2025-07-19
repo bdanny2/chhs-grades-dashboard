@@ -58,7 +58,7 @@ def landing_page():
     col1, col2, col3 = st.columns([2, 4, 2])
     with col1:
         st.image(LOGO_PATH, width=160)
-    with col2
+    with col2:
         st.markdown(
             "<div style='text-align:center; font-size:2.0em; font-weight:400; margin-bottom:0.1em;'>"
             "WELCOME TO THE CLEMENT HOWELL HIGH SCHOOL GREADES MANAGEMENT SYSTEM</div>",
