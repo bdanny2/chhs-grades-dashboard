@@ -92,7 +92,7 @@ def teacher_interface():
     matched = teacher_df[teacher_df["email"].str.strip().str.lower() == email]
 
     if len(matched) == 0:
-        st.sidebar.error("Email not recognized! Please use your registered email.")
+        st.sidebar.error("Please enter your registered CHHS email.")
         if st.sidebar.button("Back to Role Select"):
             st.session_state["user_role"] = None
             st.rerun()
