@@ -10,7 +10,7 @@ st.markdown("""
         body, .stApp { background-color: #f5deb3 !important; }
         section[data-testid="stSidebar"] { background-color: cornsilk !important; }
         .block-container {
-            padding-top: 2.5em !important;
+            padding-top: 2.0em !important;
             padding-bottom: 2.5em !important;
             padding-left: 4vw !important;
             padding-right: 4vw !important;
