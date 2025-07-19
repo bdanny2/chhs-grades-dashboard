@@ -11,10 +11,10 @@ st.markdown("""
         section[data-testid="stSidebar"] { background-color: cornsilk !important; }
         .block-container {
             padding-top: 2.0em !important;
-            padding-bottom: 2.0em !important;
+            padding-bottom: 1.0em !important;
             padding-left: 3vw !important;
             padding-right: 3vw !important;
-            font-size: 1.5em;
+            font-size: 1.2em;
         }
     </style>
 """, unsafe_allow_html=True)
