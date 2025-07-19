@@ -82,6 +82,12 @@ def teacher_interface():
     st.sidebar.image(LOGO_PATH, width=110)
     st.sidebar.title("Teacher Entry Portal")
 
+    st.markdown(
+            "<div style='text-align:center; font-size:2.0em; font-weight:400; margin-bottom:0.1em;'>"
+            "WELCOME TO THE CLEMENT HOWELL HIGH SCHOOL GRADES MANAGEMENT SYSTEM</div>",
+            unsafe_allow_html=True
+        )
+    
     email = st.sidebar.text_input("Your Email").strip().lower()
     matched = teacher_df[teacher_df["email"].str.strip().str.lower() == email]
 
