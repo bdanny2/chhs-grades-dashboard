@@ -12,7 +12,7 @@ st.markdown("""
         .block-container {
             padding-top: 2.0em !important;
             padding-bottom: 2.0em !important;
-            padding-left: 8vw !important;
+            padding-left: 4vw !important;
             padding-right: 4vw !important;
             font-size: 1.5em;
         }
