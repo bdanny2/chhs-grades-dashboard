@@ -14,6 +14,7 @@ st.markdown("""
             padding-bottom: 2.5em !important;
             padding-left: 4vw !important;
             padding-right: 4vw !important;
+            font-size: 1.5em;
         }
     </style>
 """, unsafe_allow_html=True)
