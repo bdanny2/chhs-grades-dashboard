@@ -48,11 +48,9 @@ def get_clients_and_data():
         ]
     )
     client = gspread.authorize(creds)
-    # Teachers
     teacher_ws = client.open(SPREADSHEET_NAME).worksheet(SHEET_TEACHERS)
     teacher_data = teacher_ws.get_all_records()
     teacher_df = pd.DataFrame(teacher_data)
-    # Students/Grades
     student_ws = client.open(SPREADSHEET_NAME).worksheet(SHEET_STUDENT)
     student_data = student_ws.get_all_values()
     header = student_data[0]
@@ -65,18 +63,15 @@ client, teacher_df, student_df, student_ws = get_clients_and_data()
 if "user_role" not in st.session_state:
     st.session_state["user_role"] = None
 
-if "rerun_requested" not in st.session_state:
-    st.session_state["rerun_requested"] = False
-
 # --- Index / Landing Page ---
 if st.session_state["user_role"] is None:
-    st.title("Welcome to the Grades Management System")
+    st.header("Welcome to CHHS Grading System")
     st.subheader("Please select your role to continue:")
     role = st.selectbox("I am a...", ["Select...", "Teacher", "Student", "Parent", "Admin"])
     if st.button("Continue"):
         if role != "Select...":
             st.session_state["user_role"] = role
-            st.session_state["rerun_requested"] = True
+            st.rerun()
     st.markdown("---")
     st.info("If you do not see your role or have access issues, contact the school administrator.")
 
@@ -90,7 +85,7 @@ elif st.session_state["user_role"] == "Teacher":
 
     if len(matched) == 0:
         st.sidebar.error("Email not recognized! Please use your registered email.")
-        st.sidebar.button("Back to Role Select", on_click=lambda: st.session_state.update(user_role=None, rerun_requested=True))
+        st.sidebar.button("Back to Role Select", on_click=lambda: st.session_state.update(user_role=None))
         st.stop()
     else:
         teacher_name = matched.iloc[0]["Teacher"]
@@ -98,7 +93,6 @@ elif st.session_state["user_role"] == "Teacher":
         subjects = matched["Subject"].tolist()
         subject = st.sidebar.selectbox("Select Subject", sorted(set(subjects)))
 
-    # --- Filter student data by responsible teacher & subject ---
     filtered = student_df[
         (student_df["Teacher_Responsible_Email"].str.strip().str.lower() == email) &
         (student_df["Subject"] == subject)
@@ -140,11 +134,7 @@ elif st.session_state["user_role"] == "Teacher":
                     new_value = edited_df.at[idx, col]
                     student_ws.update_cell(row_number, col_number, new_value)
             st.success("Changes saved to Google Sheet!")
-<<<<<<< HEAD
-            st.session_state["rerun_requested"] = True
-=======
             st.rerun()
->>>>>>> recover-fix
 
         st.divider()
         with st.expander("Show all students/grades (read only):"):
@@ -154,11 +144,7 @@ elif st.session_state["user_role"] == "Teacher":
 
     if st.sidebar.button("Change Role"):
         st.session_state["user_role"] = None
-<<<<<<< HEAD
-        st.session_state["rerun_requested"] = True
-=======
         st.rerun()
->>>>>>> recover-fix
 
 # --- STUDENT INTERFACE (Placeholder) ---
 elif st.session_state["user_role"] == "Student":
@@ -166,11 +152,7 @@ elif st.session_state["user_role"] == "Student":
     st.info("🔒 This area is under development.\n\nIn future, students will be able to securely view their grades and progress reports here.")
     if st.button("Change Role"):
         st.session_state["user_role"] = None
-<<<<<<< HEAD
-        st.session_state["rerun_requested"] = True
-=======
         st.rerun()
->>>>>>> recover-fix
 
 # --- PARENT INTERFACE (Placeholder) ---
 elif st.session_state["user_role"] == "Parent":
@@ -178,11 +160,7 @@ elif st.session_state["user_role"] == "Parent":
     st.info("🔒 This area is under development.\n\nParents will soon be able to log in and view their child's grades and school progress.")
     if st.button("Change Role"):
         st.session_state["user_role"] = None
-<<<<<<< HEAD
-        st.session_state["rerun_requested"] = True
-=======
         st.rerun()
->>>>>>> recover-fix
 
 # --- ADMIN INTERFACE (Placeholder) ---
 elif st.session_state["user_role"] == "Admin":
@@ -190,13 +168,5 @@ elif st.session_state["user_role"] == "Admin":
     st.info("🔒 This area is under development.\n\nAdmins will be able to manage users, run analytics, and export grade reports.")
     if st.button("Change Role"):
         st.session_state["user_role"] = None
-<<<<<<< HEAD
-        st.session_state["rerun_requested"] = True
-
-# --- Safe Rerun Trigger (Global) ---
-if st.session_state.get("rerun_requested"):
-    st.session_state["rerun_requested"] = False
-    st.rerun()
-=======
         st.rerun()
->>>>>>> recover-fix
+
