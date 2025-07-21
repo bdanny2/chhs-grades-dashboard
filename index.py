@@ -140,7 +140,11 @@ elif st.session_state["user_role"] == "Teacher":
                     new_value = edited_df.at[idx, col]
                     student_ws.update_cell(row_number, col_number, new_value)
             st.success("Changes saved to Google Sheet!")
+<<<<<<< HEAD
             st.session_state["rerun_requested"] = True
+=======
+            st.rerun()
+>>>>>>> recover-fix
 
         st.divider()
         with st.expander("Show all students/grades (read only):"):
@@ -150,7 +154,11 @@ elif st.session_state["user_role"] == "Teacher":
 
     if st.sidebar.button("Change Role"):
         st.session_state["user_role"] = None
+<<<<<<< HEAD
         st.session_state["rerun_requested"] = True
+=======
+        st.rerun()
+>>>>>>> recover-fix
 
 # --- STUDENT INTERFACE (Placeholder) ---
 elif st.session_state["user_role"] == "Student":
@@ -158,7 +166,11 @@ elif st.session_state["user_role"] == "Student":
     st.info("🔒 This area is under development.\n\nIn future, students will be able to securely view their grades and progress reports here.")
     if st.button("Change Role"):
         st.session_state["user_role"] = None
+<<<<<<< HEAD
         st.session_state["rerun_requested"] = True
+=======
+        st.rerun()
+>>>>>>> recover-fix
 
 # --- PARENT INTERFACE (Placeholder) ---
 elif st.session_state["user_role"] == "Parent":
@@ -166,7 +178,11 @@ elif st.session_state["user_role"] == "Parent":
     st.info("🔒 This area is under development.\n\nParents will soon be able to log in and view their child's grades and school progress.")
     if st.button("Change Role"):
         st.session_state["user_role"] = None
+<<<<<<< HEAD
         st.session_state["rerun_requested"] = True
+=======
+        st.rerun()
+>>>>>>> recover-fix
 
 # --- ADMIN INTERFACE (Placeholder) ---
 elif st.session_state["user_role"] == "Admin":
@@ -174,9 +190,13 @@ elif st.session_state["user_role"] == "Admin":
     st.info("🔒 This area is under development.\n\nAdmins will be able to manage users, run analytics, and export grade reports.")
     if st.button("Change Role"):
         st.session_state["user_role"] = None
+<<<<<<< HEAD
         st.session_state["rerun_requested"] = True
 
 # --- Safe Rerun Trigger (Global) ---
 if st.session_state.get("rerun_requested"):
     st.session_state["rerun_requested"] = False
     st.rerun()
+=======
+        st.rerun()
+>>>>>>> recover-fix
