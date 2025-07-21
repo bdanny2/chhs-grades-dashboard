@@ -2,6 +2,7 @@ import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
 import pandas as pd
+import json
 
 # --- App config & Styles ---
 st.set_page_config(page_title="Grades Portal", layout="wide")
