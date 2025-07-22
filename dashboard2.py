@@ -4,7 +4,10 @@ from google.oauth2.service_account import Credentials
 
 # --- Authenticate and connect to your new workbook ---
 service_account_info = st.secrets["gcp_service_account"]
-creds = Credentials.from_service_account_info(service_account_info, scopes=["https://www.googleapis.com/auth/spreadsheets"])
+creds = Credentials.from_service_account_info(service_account_info, scope = [
+    "https://spreadsheets.google.com/feeds",
+    "https://www.googleapis.com/auth/drive"
+])
 client = gspread.authorize(creds)
 worksheet = client.open("Grades3").worksheet("Sheet1")  # Update sheet name if needed
 
