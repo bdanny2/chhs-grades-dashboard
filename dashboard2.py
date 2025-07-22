@@ -4,7 +4,7 @@ from google.oauth2.service_account import Credentials
 
 # --- Authenticate and connect to your new workbook ---
 service_account_info = st.secrets["gcp_service_account"]
-creds = Credentials.from_service_account_info(service_account_info, scope = [
+creds = Credentials.from_service_account_info(service_account_info, scopes = [
     "https://spreadsheets.google.com/feeds",
     "https://www.googleapis.com/auth/drive"
 ])
