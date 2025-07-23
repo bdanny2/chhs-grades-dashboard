@@ -20,7 +20,7 @@ df = get_as_dataframe(worksheet, evaluate_formulas=True).dropna(how='all')
 st.markdown("""
     <style>
         body, .stApp { background-color: #f5deb3 !important; }
-        section[data-testid="stSidebar"] { background-color: cornsilk !important; }
+        section[data-testid="stSidebar"] { background-color: corn-silk !important; }
         .main-title {
             text-align: center; 
             font-size: 3em; 
@@ -45,7 +45,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---- Sidebar content ----
-st.sidebar.image("logo-chhs.png", width=120)
+st.sidebar.image("assets/logo-chhs.png", width=120)
 st.sidebar.header("Student Selector")
 st.sidebar.markdown("**Welcome to the Clement Howell High School Grades Dashboard!**", unsafe_allow_html=True)
 

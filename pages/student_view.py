@@ -2,6 +2,17 @@ import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
 
+
+from utils.layout import apply_common_layout
+
+apply_common_layout(
+    page_key="teacher_input",
+    title="Teacher Grade Input",
+    subtitle="Input and update your subject grades here."
+)
+
+
+
 # --- Authenticate and connect to your new workbook ---
 service_account_info = st.secrets["gcp_service_account"]
 creds = Credentials.from_service_account_info(service_account_info, scopes = [
